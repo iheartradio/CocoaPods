@@ -186,15 +186,7 @@ then
       ;;
   esac
 
-  # Find all other xcassets (this unfortunately includes those of path pods and other targets).
-  OTHER_XCASSETS=$(find "$PWD" -iname "*.xcassets" -type d)
-  while read line; do
-    if [[ $line != "`realpath $PODS_ROOT`*" ]]; then
-      XCASSET_FILES+=("$line")
-    fi
-  done <<<"$OTHER_XCASSETS"
-
-  printf "%s\\0" "${XCASSET_FILES[@]}" | xargs -0 xcrun actool --output-format human-readable-text --notices --warnings --platform "${PLATFORM_NAME}" --minimum-deployment-target "${IPHONEOS_DEPLOYMENT_TARGET}" ${TARGET_DEVICE_ARGS} --compress-pngs --compile "${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
+  pod internal list-asset-catalog ${PROJECT_FILE_PATH} ${TARGETNAME} | xargs -0 xcrun actool --output-format human-readable-text --notices --warnings --platform "${PLATFORM_NAME}" --minimum-deployment-target "${IPHONEOS_DEPLOYMENT_TARGET}" ${TARGET_DEVICE_ARGS} --compress-pngs --compile "${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
 fi
 EOS
     end
